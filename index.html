@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Parser | Candidate Workspace</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-icon">R</span><span>Resume<span class="brand-light">Parser</span></span></div><span class="top-tag">Candidate workspace</span></header>
+  <main class="container">
+    <section class="hero"><div><p class="eyebrow">RESUME INTELLIGENCE · DEMO</p><h1>Find the right talent,<br><span>faster.</span></h1><p class="sub">Upload a resume to extract candidate details, skills and education into a searchable workspace.</p></div><div class="hero-mark">✦</div></section>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="messages">{% for category, message in messages %}<div class="message {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+    <section class="upload-card"><div class="section-heading"><div><h2>Parse a new resume</h2><p>PDF format · Maximum 10 MB</p></div><span class="pill">PDF ONLY</span></div><form action="{{ url_for('upload_resume') }}" method="post" enctype="multipart/form-data" class="upload-form"><label class="file-picker"><span class="upload-symbol">↑</span><span><strong>Choose a PDF resume</strong><small>Click to browse your files</small></span><input type="file" name="resume" accept="application/pdf" required></label><button type="submit" class="primary-btn">Upload &amp; parse <span>→</span></button></form></section>
+    <section class="records"><div class="section-heading"><div><h2>Candidate records</h2><p>Extracted profiles stored in your local database</p></div><span class="count">{{ candidates|length }} profiles</span></div><form class="search" method="get"><input type="search" name="q" value="{{ query }}" placeholder="Search name, skill, email, education..."><button type="submit">Search</button>{% if query %}<a href="{{ url_for('index') }}" class="clear">Clear</a>{% endif %}</form>
+    {% if candidates %}<div class="candidate-list">{% for candidate in candidates %}<a class="candidate-row" href="{{ url_for('candidate_detail', candidate_id=candidate.id) }}"><span class="avatar">{{ candidate.name[:1]|upper if candidate.name and candidate.name != 'Not detected' else '?' }}</span><span class="candidate-info"><strong>{{ candidate.name }}</strong><small>{{ candidate.email }} · {{ candidate.source_filename }}</small><span class="skill-preview">{{ candidate.skills or 'No skills detected' }}</span></span><span class="arrow">↗</span></a>{% endfor %}</div>{% else %}<div class="empty"><div class="empty-icon">⌕</div><h3>No candidate profiles yet</h3><p>Upload a PDF resume above to create your first record.</p></div>{% endif %}</section>
+    <footer>Resume Parser · Learning project <span>Built with Flask &amp; Python</span></footer>
+  </main>
+</body></html>
